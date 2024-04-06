@@ -10,7 +10,7 @@ covLinux() {
 		--parallel \
 		--enable-code-coverage \
 		--jobs ${jobs} ||
-		echo NG
+		exec sh -c 'echo TEST FAILURE; exit 1'
 
 	llvm-cov \
 		export \
@@ -25,6 +25,35 @@ covLinux() {
 		--summary-only \
 		./.build/debug/sw-averagePackageTests.xctest \
 		-instr-profile ./.build/debug/codecov/default.profdata
+
+	exit $?
 }
 
-covLinux
+covDarwin() {
+	swift \
+		test \
+		--quiet \
+		--parallel \
+		--enable-code-coverage \
+		--jobs ${jobs} ||
+		exec sh -c 'echo TEST FAILURE; exit 1'
+
+	xcrun llvm-cov \
+		export \
+		-format=lcov \
+		./.build/debug/sw-averagePackageTests.xctest/Contents/MacOS/sw-averagePackageTests \
+		-instr-profile ./.build/debug/codecov/default.profdata |
+		cat >./cov.lcov
+
+	xcrun llvm-cov \
+		report \
+		--ignore-filename-regex=.build \
+		--summary-only \
+		./.build/debug/sw-averagePackageTests.xctest/Contents/MacOS/sw-averagePackageTests \
+		-instr-profile ./.build/debug/codecov/default.profdata
+
+	exit $?
+}
+
+echo $OSTYPE | fgrep -q -i linux && covLinux
+echo $OSTYPE | fgrep -q -i darwin && covDarwin
