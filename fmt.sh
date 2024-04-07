@@ -1,13 +1,21 @@
 #!/bin/sh
 
-numcpus=23
-jobs=$(( ${numcpus} - 1 ))
-
-swift-format \
-	format \
-	--in-place \
-	--recursive \
-	--ignore-unparsable-files \
-	--parallel \
-	--color-diagnostics \
-	.
+find \
+	./Sources \
+	./Benchmarks \
+	./Examples \
+	./Tests \
+	./Package.swift \
+	-type f \
+	-name '*.swift' |
+	sed \
+		-n \
+		-e '/\.build/d' \
+		-e /./p |
+	xargs \
+		swift-format \
+		format \
+		--in-place \
+		--ignore-unparsable-files \
+		--parallel \
+		--color-diagnostics
