@@ -55,14 +55,14 @@ covDarwin() {
 	exit $?
 }
 
-case $( uname -o ) in
-  Darwin)
-    covDarwin;
-    ;;
-  GNU/Linux)
-    covLinux;
-    ;;
-  *)
-    echo unknown os: $( uname -o )
-    ;;
+case $(uname -o) in
+Darwin)
+	covDarwin
+	;;
+GNU/Linux)
+	covLinux
+	;;
+*)
+	echo unknown os: $(uname -o)
+	;;
 esac
