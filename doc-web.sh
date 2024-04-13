@@ -2,9 +2,10 @@
 
 docdir=./doc.d
 port=4058
+addr=127.0.0.1
 
 python3 \
-    -m http.server \
-    --bind 127.0.0.1 \
-    --directory "${docdir}" \
-    ${port}
+	-m http.server \
+	--bind "${addr}" \
+	--directory "${docdir}" \
+	${port}
