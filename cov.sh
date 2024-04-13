@@ -1,6 +1,21 @@
 #!/bin/sh
 
-numcpus=23
+hw_ncpu() {
+	case $(uname -o) in
+	GNU/Linux)
+		# TODO
+		echo 23
+		;;
+	Darwin)
+		sysctl -n hw.ncpu
+		;;
+	*)
+		echo 23
+		;;
+	esac
+}
+
+numcpus=$(hw_ncpu)
 jobs=$((${numcpus} - 1))
 
 covLinux() {
